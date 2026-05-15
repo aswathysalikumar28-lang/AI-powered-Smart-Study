@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Writer – SmartStudy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+body{ background:#f1f5f9; min-height:100vh; padding:30px 20px; }
+.container{ max-width:800px; margin:auto; }
+.header{ text-align:center; margin-bottom:30px; }
+.header h1{ font-size:2rem; color:#1e293b; }
+.header p{ color:#64748b; margin-top:6px; font-size:0.9rem; }
+.write-box{ background:white; border-radius:20px; padding:28px; box-shadow:0 4px 20px rgba(0,0,0,0.07); margin-bottom:24px; }
+.write-box label{ display:block; font-weight:600; color:#334155; margin-bottom:8px; font-size:0.95rem; }
+textarea{
+    width:100%; padding:14px; border:2px solid #e2e8f0;
+    border-radius:12px; font-size:1rem; color:#334155;
+    resize:vertical; min-height:90px; transition:0.2s;
+    font-family:'Segoe UI', sans-serif;
+}
+textarea:focus{ outline:none; border-color:#6366f1; }
+.btn{
+    margin-top:14px; padding:12px 28px;
+    background:linear-gradient(135deg, #6366f1, #8b5cf6);
+    color:white; border:none; border-radius:12px;
+    font-size:1rem; font-weight:600; cursor:pointer; transition:0.3s;
+}
+.btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(99,102,241,0.3); }
+.btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+.result-box{ background:white; border-radius:20px; padding:28px; box-shadow:0 4px 20px rgba(0,0,0,0.07); }
+.topic-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6366f1; margin-bottom:8px; }
+.topic-text{ background:#eef2ff; border-radius:10px; padding:12px 18px; color:#3730a3; font-weight:600; margin-bottom:20px; }
+.output-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#0891b2; margin-bottom:8px; }
+.output-content{
+    background:#f0f9ff; border-radius:10px; padding:20px 22px;
+    color:#0f172a; font-size:1rem; line-height:1.85;
+    border-left:4px solid #0ea5e9;
+}
+/* Markdown styles */
+.output-content h2{ color:#1d4ed8; font-size:1.15rem; margin:18px 0 8px; }
+.output-content h3{ color:#0369a1; font-size:1rem; margin:14px 0 6px; }
+.output-content ul, .output-content ol{ padding-left:20px; margin:8px 0; }
+.output-content li{ margin:5px 0; }
+.output-content strong{ color:#1e293b; }
+.output-content p{ margin:8px 0; }
+.output-content code{ background:#e0f2fe; padding:2px 6px; border-radius:4px; font-family:monospace; font-size:0.9em; }
+.error{ background:#fef2f2; color:#dc2626; border-radius:10px; padding:12px 18px; margin-top:14px; font-size:0.9rem; }
+.nav{ display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+.nav a{
+    display:inline-block; text-decoration:none; padding:10px 18px;
+    border-radius:10px; font-size:0.88rem; font-weight:600; transition:0.3s;
+    background:#f1f5f9; color:#475569; border:1px solid #e2e8f0;
+}
+.nav a:hover{ background:#e2e8f0; transform:translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🧾 AI Writer</h1>
+        <p>Get a clear, exam-ready explanation on any topic</p>
+    </div>
+
+    <div class="write-box">
+        <label for="topic">Enter a topic:</label>
+        <form action="/write" method="POST" onsubmit="handleSubmit()">
+            <textarea name="topic" id="topic" placeholder="e.g. The water cycle / Photosynthesis / Newton's Laws of Motion..." required>{% if topic %}{{ topic }}{% endif %}</textarea>
+            {% if error %}<div class="error">{{ error }}</div>{% endif %}
+            <button type="submit" class="btn" id="writeBtn">✍️ Generate Explanation</button>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result-box">
+        <div class="topic-label">Topic</div>
+        <div class="topic-text">{{ topic }}</div>
+
+        <div class="output-label">AI Explanation</div>
+        <div class="output-content" id="outputContent"></div>
+        <script>
+            const raw = {{ result | tojson }};
+            document.getElementById('outputContent').innerHTML = marked.parse(raw);
+        </script>
+    </div>
+    {% endif %}
+
+    <div class="nav">
+        <a href="/">🏠 Home</a>
+        <a href="/summary">📄 Summary</a>
+        <a href="/chat">🤖 AI Tutor</a>
+    </div>
+</div>
+
+<script>
+function handleSubmit(){
+    const btn = document.getElementById('writeBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating...';
+}
+</script>
+</body>
+</html>

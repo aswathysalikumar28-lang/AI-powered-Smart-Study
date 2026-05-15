@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart Summary</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+    color:white;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    border-radius:25px;
+    padding:40px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+}
+
+.logo{
+    font-size:4rem;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+h1{
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:10px;
+}
+
+.tagline{
+    text-align:center;
+    color:#cbd5e1;
+    margin-bottom:35px;
+}
+
+.summary-box{
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:30px;
+    line-height:1.9;
+    font-size:1.05rem;
+    color:#e2e8f0;
+    white-space:pre-wrap;
+}
+
+.back-btn{
+    display:inline-block;
+    margin-top:25px;
+    text-decoration:none;
+    background:linear-gradient(135deg,#38bdf8,#6366f1);
+    color:white;
+    padding:12px 25px;
+    border-radius:12px;
+    transition:0.3s;
+    font-weight:bold;
+}
+
+.back-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 20px rgba(56,189,248,0.4);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">✨</div>
+
+    <h1>AI Summary</h1>
+
+    <p class="tagline">
+        Smart AI Generated Notes
+    </p>
+
+    <div class="summary-box">
+
+        {{ summary }}
+
+    </div>
+
+    <center>
+
+        <a href="/" class="back-btn">
+            Upload Another PDF
+        </a>
+
+    </center>
+
+</div>
+
+</body>
+</html>

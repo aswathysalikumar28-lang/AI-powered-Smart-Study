@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartStudy AI</title>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+body{
+    min-height:100vh; display:flex; justify-content:center; align-items:center;
+    background: linear-gradient(135deg, #f8fafc, #dbeafe, #ede9fe);
+    padding:20px;
+}
+.container{
+    width:90%; max-width:720px; background:white;
+    border-radius:30px; padding:50px; text-align:center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+}
+.logo{ font-size:4rem; margin-bottom:10px; }
+h1{ font-size:2.8rem; color:#1e293b; margin-bottom:8px; }
+.tagline{ color:#64748b; font-size:1.05rem; margin-bottom:35px; }
+.upload-box{
+    background:#f8fafc; border:2px dashed #cbd5e1;
+    border-radius:25px; padding:40px; transition:0.3s; margin-bottom:20px;
+}
+.upload-box:hover{ border-color:#8b5cf6; background:#f5f3ff; }
+input[type="file"]{ margin-bottom:20px; color:#334155; font-size:1rem; }
+.btn{
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border:none; color:white; padding:14px 32px;
+    border-radius:14px; font-size:1rem; font-weight:600;
+    cursor:pointer; transition:0.3s; display:inline-block; text-decoration:none;
+}
+.btn:hover{ transform:translateY(-3px); box-shadow:0 10px 25px rgba(139,92,246,0.3); }
+.features{ margin-top:30px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.card{
+    background:#f8fafc; padding:22px; border-radius:18px;
+    color:#334155; font-weight:600; transition:0.3s;
+    border:1px solid #e2e8f0; text-decoration:none; display:block;
+    font-size:0.95rem;
+}
+.card:hover{ transform:translateY(-5px); background:#fff; box-shadow:0 10px 20px rgba(0,0,0,0.07); }
+.card .icon{ font-size:1.8rem; display:block; margin-bottom:8px; }
+.error{ background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-radius:12px; padding:12px 18px; margin-bottom:20px; font-size:0.9rem; }
+.pdf-badge{ background:#dcfce7; color:#16a34a; border-radius:20px; padding:6px 14px; font-size:0.85rem; display:inline-block; margin-bottom:20px; }
+.loading{ display:none; }
+form:has(input[type="file"]) button[type="submit"]:active + .loading{ display:block; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">🧠</div>
+    <h1>SmartStudy AI</h1>
+    <p class="tagline">Learn Smarter with Artificial Intelligence</p>
+
+    {% if has_pdf %}
+    <div class="pdf-badge">✅ Notes loaded: {{ pdf_filename }}</div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+        <div class="upload-box">
+            <p style="color:#64748b;margin-bottom:16px;font-size:0.95rem;">📎 Upload your study PDF to get started</p>
+            <input type="file" name="pdf" accept=".pdf" required>
+            <br>
+            <button type="submit" class="btn" id="uploadBtn">📤 Upload & Summarize</button>
+            <p id="loadingMsg" style="display:none;color:#8b5cf6;margin-top:12px;font-size:0.9rem;">⏳ Analyzing your PDF, please wait...</p>
+        </div>
+    </form>
+
+    <div class="features">
+        <a href="/summary" class="card">
+            <span class="icon">📄</span>
+            PDF Summary
+        </a>
+        <a href="/chat" class="card">
+            <span class="icon">🤖</span>
+            AI Tutor
+        </a>
+        <a href="/writer" class="card">
+            <span class="icon">🧾</span>
+            AI Writer
+        </a>
+    </div>
+</div>
+
+<script>
+function showLoading(){
+    document.getElementById('uploadBtn').disabled = true;
+    document.getElementById('uploadBtn').textContent = '⏳ Processing...';
+    document.getElementById('loadingMsg').style.display = 'block';
+}
+</script>
+</body>
+</html>

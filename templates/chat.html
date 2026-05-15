@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tutor – SmartStudy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+body{ background:#f1f5f9; min-height:100vh; padding:30px 20px; }
+.container{ max-width:800px; margin:auto; }
+.header{ text-align:center; margin-bottom:30px; }
+.header h1{ font-size:2rem; color:#1e293b; }
+.header p{ color:#64748b; margin-top:6px; font-size:0.9rem; }
+.pdf-badge{ display:inline-block; background:#dcfce7; color:#16a34a; border-radius:20px; padding:5px 14px; font-size:0.82rem; margin-top:8px; }
+.no-pdf-badge{ display:inline-block; background:#fef9c3; color:#b45309; border-radius:20px; padding:5px 14px; font-size:0.82rem; margin-top:8px; }
+.ask-box{ background:white; border-radius:20px; padding:28px; box-shadow:0 4px 20px rgba(0,0,0,0.07); margin-bottom:24px; }
+.ask-box label{ display:block; font-weight:600; color:#334155; margin-bottom:8px; font-size:0.95rem; }
+textarea{
+    width:100%; padding:14px; border:2px solid #e2e8f0;
+    border-radius:12px; font-size:1rem; color:#334155;
+    resize:vertical; min-height:100px; transition:0.2s;
+    font-family:'Segoe UI', sans-serif;
+}
+textarea:focus{ outline:none; border-color:#8b5cf6; }
+.btn{
+    margin-top:14px; padding:12px 28px;
+    background:linear-gradient(135deg, #8b5cf6, #6366f1);
+    color:white; border:none; border-radius:12px;
+    font-size:1rem; font-weight:600; cursor:pointer; transition:0.3s;
+}
+.btn:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(139,92,246,0.3); }
+.btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+.answer-box{ background:white; border-radius:20px; padding:28px; box-shadow:0 4px 20px rgba(0,0,0,0.07); }
+.question-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#8b5cf6; margin-bottom:8px; }
+.question-text{ background:#f5f3ff; border-radius:10px; padding:14px 18px; color:#334155; font-size:1rem; margin-bottom:20px; }
+.answer-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#16a34a; margin-bottom:8px; }
+.answer-content{
+    background:#f0fdf4; border-radius:10px; padding:18px 20px;
+    color:#1e293b; font-size:1rem; line-height:1.8;
+    border-left:4px solid #22c55e;
+}
+/* Markdown styles */
+.answer-content h2, .answer-content h3{ color:#1d4ed8; margin:14px 0 6px; }
+.answer-content ul, .answer-content ol{ padding-left:20px; margin:8px 0; }
+.answer-content li{ margin:5px 0; }
+.answer-content strong{ color:#1e293b; }
+.answer-content p{ margin:8px 0; }
+.answer-content code{ background:#e0f2fe; padding:2px 6px; border-radius:4px; font-family:monospace; font-size:0.9em; }
+.nav{ display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+.nav a{
+    display:inline-block; text-decoration:none; padding:10px 18px;
+    border-radius:10px; font-size:0.88rem; font-weight:600; transition:0.3s;
+    background:#f1f5f9; color:#475569; border:1px solid #e2e8f0;
+}
+.nav a:hover{ background:#e2e8f0; transform:translateY(-2px); }
+.error{ background:#fef2f2; color:#dc2626; border-radius:10px; padding:12px 18px; margin-top:14px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🤖 AI Tutor</h1>
+        {% if has_pdf %}
+        <span class="pdf-badge">✅ Using notes: {{ pdf_filename }}</span>
+        {% else %}
+        <span class="no-pdf-badge">⚠️ No notes loaded — upload a PDF for best results</span>
+        {% endif %}
+        <p style="margin-top:10px;">Ask anything about your study material</p>
+    </div>
+
+    <div class="ask-box">
+        <label for="question">Your question:</label>
+        <form action="/ask" method="POST" onsubmit="handleSubmit()">
+            <textarea name="question" id="question" placeholder="e.g. What is photosynthesis? / Explain Newton's second law..." required>{% if question %}{{ question }}{% endif %}</textarea>
+            {% if error %}<div class="error">{{ error }}</div>{% endif %}
+            <button type="submit" class="btn" id="askBtn">Ask AI Tutor →</button>
+        </form>
+    </div>
+
+    {% if answer %}
+    <div class="answer-box">
+        <div class="question-label">Your Question</div>
+        <div class="question-text">{{ question }}</div>
+
+        <div class="answer-label">AI Answer</div>
+        <div class="answer-content" id="answerContent"></div>
+        <script>
+            const raw = {{ answer | tojson }};
+            document.getElementById('answerContent').innerHTML = marked.parse(raw);
+        </script>
+    </div>
+    {% endif %}
+
+    <div class="nav">
+        <a href="/">🏠 Home</a>
+        <a href="/summary">📄 Summary</a>
+        <a href="/writer">🧾 AI Writer</a>
+    </div>
+</div>
+
+<script>
+function handleSubmit(){
+    const btn = document.getElementById('askBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Thinking...';
+}
+</script>
+</body>
+</html>
